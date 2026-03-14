@@ -1,0 +1,54 @@
+<section class="admin-section">
+  <h1>Panel administratora</h1>
+<div class="admin-section" id="adminSection">
+  <h2>Panel Administratora</h2>
+  <h3>Dodaj nową wycieczkę</h3>
+  <form id="adminForm">
+    <input type="text" name="title" placeholder="Tytuł wycieczki" required>
+    <input type="text" name="description" placeholder="Opis" required>
+    <input type="number" name="price" placeholder="Cena" required>
+    
+    <!-- PRZYCISK WYBORU OBRAZU -->
+    <label for="imageFile" style="display:block; margin-bottom:10px; cursor:pointer; padding:10px; background:#0b3d91; color:#fff; border-radius:12px; width:fit-content;">Wybierz obraz z komputera</label>
+    <input type="file" name="imageFile" id="imageFile" accept="image/*" style="display:none;" required>
+    
+    <button type="submit">Dodaj wycieczkę</button>
+  </form>
+</div>
+  <div id="adminTourList" class="tour-grid"></div>
+</section>
+
+<script>
+const adminForm = document.getElementById("adminForm");
+const adminList = document.getElementById("adminTourList");
+
+function renderAdminTours() {
+  adminList.innerHTML = "";
+  tours.forEach(t => {
+    adminList.innerHTML += `
+      <div class="tour-card">
+        <img src="${t.image}" alt="${t.title}">
+        <h3>${t.title}</h3>
+        <p>${t.description}</p>
+        <p class="price">${t.price} PLN</p>
+      </div>
+    `;
+  });
+}
+
+adminForm.addEventListener("submit", e => {
+  e.preventDefault();
+  const newTour = {
+    title: adminForm.title.value,
+    description: adminForm.description.value,
+    price: parseInt(adminForm.price.value),
+    image: adminForm.image.value
+  };
+  tours.push(newTour);
+  renderAdminTours();
+  adminForm.reset();
+  alert("Wycieczka dodana!");
+});
+
+document.addEventListener("DOMContentLoaded", renderAdminTours);
+</script>

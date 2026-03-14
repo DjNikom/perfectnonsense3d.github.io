@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TravelPro - Kontakt</title>
+<style>
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin:0; background:linear-gradient(135deg, #0b3d91, #1e90ff);}
+header { padding:20px; background:#0b3d91; color:#fff; display:flex; justify-content:space-between; align-items:center;}
+header nav a { color:#fff; margin:0 10px; text-decoration:none; font-weight:bold; transition:0.3s;}
+header nav a:hover { color:#ffd700;}
+.contact-section { padding:50px 20px; max-width:600px; margin:0 auto;}
+.contact-section h1 { text-align:center; color:black; margin-bottom:40px;}
+#contactForm input, #contactForm textarea { width:100%; padding:12px 15px; margin-bottom:15px; border-radius:12px; border:1px solid #ccc; font-size:16px; box-sizing:border-box;}
+#contactForm button { width:100%; padding:15px; border:none; border-radius:15px; font-weight:bold; background:linear-gradient(90deg,#0b3d91,#3a6fc5); color:#fff; cursor:pointer; transition:0.3s; }
+#contactForm button:hover { background:linear-gradient(90deg,#ffd700,#ff8c00); color:#0b3d91; }
+#statusMessage { text-align:center; font-weight:bold; margin-top:15px; }
+</style>
+</head>
+<body>
+
+<header>
+<h2>TravelPro</h2>
+<nav>
+<a href="index.html">Home</a>
+<a href="tours.html">Tours</a>
+<a href="about.html">About</a>
+<a href="contact.html">Contact</a>
+<a href="login.html">Login</a>
+</nav>
+</header>
+
+<section class="contact-section">
+<h1>Kontakt</h1>
+<form id="contactForm">
+  <input type="text" name="name" placeholder="Imię i nazwisko" required>
+  <input type="email" name="email" placeholder="Email" required>
+  <input type="text" name="subject" placeholder="Temat" required>
+  <textarea name="message" placeholder="Wiadomość" required></textarea>
+  <button type="submit">Wyślij</button>
+</form>
+<p id="statusMessage"></p>
+</section>
+
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+emailjs.init("BB2z8JtUKnhrghlIj"); // <-- wstaw swój Public Key
+
+const form = document.getElementById("contactForm");
+const status = document.getElementById("statusMessage");
+
+form.addEventListener("submit", function(e){
+  e.preventDefault();
+
+  emailjs.sendForm('service_x55q74a','template_hjhsurm', form)
+    .then(() => {
+      status.style.color="green";
+      status.textContent = "Wiadomość wysłana!";
+      form.reset();
+    }, (error) => {
+      status.style.color="red";
+      status.textContent = "Błąd wysyłki: " + JSON.stringify(error);
+      console.error(error);
+    });
+});
+</script>
+
+</body>
+</html>

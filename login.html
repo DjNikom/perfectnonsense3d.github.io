@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Administratora - TravelPro</title>
+<style>
+body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #0b3d91, #1e90ff); margin:0; padding:0;}
+header { background:#0b3d91; color:#fff; padding:15px 20px; display:flex; justify-content:space-between; align-items:center;}
+header h1 { margin:0; font-size:24px;}
+header nav a { color:#fff; margin-left:15px; text-decoration:none; font-weight:bold;}
+header nav a:hover { color:#ffd700; }
+.container { max-width:500px; margin:40px auto; background:#fff; padding:25px; border-radius:20px; box-shadow:0 12px 30px rgba(0,0,0,0.1);}
+h2 { text-align:center; color:#0b3d91; margin-bottom:20px;}
+input, button { width:100%; padding:12px; margin-bottom:15px; border-radius:12px; border:1px solid #ccc; font-size:16px; box-sizing:border-box;}
+button { background:#0b3d91; color:#fff; font-weight:bold; cursor:pointer; transition:0.3s; border:none;}
+button:hover { background:#ffd700; color:#0b3d91;}
+label.file-label { display:block; cursor:pointer; padding:10px; background:#0b3d91; color:#fff; border-radius:12px; text-align:center; margin-bottom:15px;}
+</style>
+</head>
+<body>
+
+<header>
+<h1>TravelPro</h1>
+<nav>
+<a href="index.html">Home</a>
+<a href="tours.html">Tours</a>
+<a href="about.html">About</a>
+<a href="contact.html">Contact</a>
+</nav>
+</header>
+
+<!-- LOGIN -->
+<div class="container" id="loginContainer">
+<h2>Logowanie</h2>
+<form id="loginForm">
+  <input type="text" name="username" placeholder="Login" required>
+  <input type="password" name="password" placeholder="Hasło" required>
+  <button type="submit">Zaloguj</button>
+</form>
+</div>
+
+<!-- PANEL ADMINA -->
+<div class="container" id="adminSection" style="display:none;">
+<h2>Panel Administratora</h2>
+<h3>Dodaj nową wycieczkę</h3>
+<form id="adminForm">
+  <input type="text" name="title" placeholder="Tytuł wycieczki" required>
+  <input type="text" name="description" placeholder="Opis" required>
+  <input type="number" name="price" placeholder="Cena" required>
+
+  <!-- Przycisk wyboru obrazu -->
+  <label for="imageFile" class="file-label">Wybierz obraz z komputera</label>
+  <input type="file" name="imageFile" id="imageFile" accept="image/*" style="display:none;" required>
+
+  <button type="submit">Dodaj wycieczkę</button>
+</form>
+
+<h3 style="margin-top:30px;">Lista wycieczek</h3>
+<div id="adminTourList"></div>
+</div>
+
+<script>
+// --- LOGOWANIE ADMINA ---
+const loginForm = document.getElementById("loginForm");
+const loginContainer = document.getElementById("loginContainer");
+const adminSection = document.getElementById("adminSection");
+
+// Ukrywamy panel admina na start
+adminSection.style.display = "none";
+
+// Funkcja logowania
+loginForm.addEventListener("submit", e => {
+  e.preventDefault();
+  const username = loginForm.username.value;
+  const password = loginForm.password.value;
+
+  if(username === "admin" && password === "admin123") {
+    loginContainer.style.display = "none";  // ukrywamy formularz logowania
+    adminSection.style.display = "block";    // pokazujemy panel admina
+    renderAdminTours();                       // renderujemy wycieczki admina
+  } else {
+    alert("Nieprawidłowy login lub hasło!");
+  }
+});
+
+// --- PANEL ADMINA ---
+const adminForm = document.getElementById("adminForm");
+const adminList = document.getElementById("adminTourList");
+let tours = JSON.parse(localStorage.getItem("tours")) || [];
+
+// Dodawanie wycieczki
+adminForm.addEventListener("submit", e=>{
+  e.preventDefault();
+
+  const fileInput = document.getElementById("imageFile").files[0];
+  if(!fileInput) return alert("Wybierz obrazek!");
+
+  const reader = new FileReader();
+  reader.onload = function(event){
+    const imageBase64 = event.target.result;
+
+    const newTour = {
+      title: adminForm.title.value,
+      description: adminForm.description.value,
+      price: parseInt(adminForm.price.value),
+      image: imageBase64
+    };
+
+    tours.push(newTour);
+    localStorage.setItem("tours", JSON.stringify(tours));
+    renderAdminTours();
+    adminForm.reset();
+    alert("Wycieczka dodana!");
+  };
+
+  reader.readAsDataURL(fileInput);
+});
+
+// Wyświetlanie wycieczek w panelu admina
+function renderAdminTours(){
+  adminList.innerHTML="";
+  tours.forEach((t,index)=>{
+    const card = document.createElement("div");
+    card.style.background="#f0f0f0";
+    card.style.padding="15px";
+    card.style.marginBottom="15px";
+    card.style.borderRadius="12px";
+    card.innerHTML=`
+      <h4>${t.title}</h4>
+      <p>${t.description}</p>
+      <p><b>${t.price} PLN</b></p>
+      <img src="${t.image}" alt="${t.title}" style="width:100%; max-width:250px; border-radius:12px; margin-bottom:10px;">
+      <button class="deleteBtn">Usuń wycieczkę</button>
+    `;
+    card.querySelector(".deleteBtn").addEventListener("click", ()=>{
+      if(confirm(`Usunąć wycieczkę "${t.title}"?`)){
+        tours.splice(index,1);
+        localStorage.setItem("tours", JSON.stringify(tours));
+        renderAdminTours();
+      }
+    });
+    adminList.appendChild(card);
+  });
+}
+</script>
+
+</body>
+</html>

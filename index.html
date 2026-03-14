@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TravelPro - Home</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h2>TravelPro</h2>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="tours.html">Tours</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="login.html">Login</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Odkrywaj świat z TravelPro</h1>
+  <p>Najlepsze wycieczki w jednym miejscu</p>
+  <a href="tours.html" class="btn">Sprawdź oferty</a>
+</section>
+
+<section class="featured-tours">
+  <h2>Wyróżnione wycieczki</h2>
+  <div class="tour-grid" id="featuredTours"></div>
+</section>
+
+<footer>
+  <p>© 2026 Foxe. All rights reserved.</p>
+</footer>
+
+<script src="tours.js"></script>
+<script>
+  // Pokazujemy tylko 3 wycieczki na Home
+  document.addEventListener("DOMContentLoaded", () => {
+    const featuredTours = document.getElementById("featuredTours");
+    tours.slice(0,3).forEach(t => {
+      featuredTours.innerHTML += `
+        <div class="tour-card">
+          <img src="${t.image}" alt="${t.title}">
+          <h3>${t.title}</h3>
+          <p>${t.description}</p>
+          <p class="price">${t.price} PLN</p>
+          <a href="tours.html" class="btn">Rezerwuj</a>
+        </div>
+      `;
+    });
+  });
+</script>
+</body>
+</html>
